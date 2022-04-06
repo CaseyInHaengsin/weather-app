@@ -4,10 +4,15 @@ const cors = require('cors')
 const axios = require('axios')
 const app = express()
 const api = require('./api/api')
+const locations = require('./api/locations')
 
 app.use(express.json())
 app.use(cors())
 app.use(express.static('../dist'))
+
+app.get('/api/locations', (req, res) => {
+  res.status(200).json({ locations: Object.keys(locations) })
+})
 
 app.get('/api/:location/:concurrentcount', async (req, res) => {
   const { location, concurrentcount } = req.params
