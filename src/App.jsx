@@ -2,28 +2,35 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import './App.css'
 
+const BASE_URL = 'http://localhost:3001/api'
+const BASE_CONCURRENCY = 1
+
 function App () {
   const [slcWeather, setSlcWeather] = useState(null)
   const [losAnglesWeather, setLosAngelesWeather] = useState(null)
   const [boiseStateWeather, setBoiseStateWeather] = useState(null)
-  // useEffect(() => {
-  //   const getWeather = async () => {
-  //     const slcWeather = await api('SLC', 3)
-  //     console.log('slcWeather', slcWeather)
-  //     const losAngelesWeather = await api('LA', 3)
-  //     console.log('losAngelesWeather', losAngelesWeather)
-  //     const boiseStateWeather = await api('BOISE', 3)
-  //     console.log('boise', boiseStateWeather)
-  //     return {
-  //       slcWeather,
-  //       losAngelesWeather,
-  //       boiseStateWeather
-  //     }
-  //   }
-  //   getWeather().then(data => {
-  //     console.log(data)
-  //   })
-  // }, [])
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    const getWeather = async () => {
+      const slcWeather = await axios.get(`${BASE_URL}/slc/${BASE_CONCURRENCY}`)
+      const losAngelesWeather = await axios.get(
+        `${BASE_URL}/la/${BASE_CONCURRENCY}`
+      )
+
+      const boiseStateWeather = await axios.get(
+        `${BASE_URL}/boise/${BASE_CONCURRENCY}`
+      )
+
+      return {
+        slcWeather,
+        losAngelesWeather,
+        boiseStateWeather
+      }
+    }
+    getWeather().then(data => {
+      console.log(data)
+    })
+  }, [])
   return (
     <div className='m-6 h-screen flex items-center justify-center flex-col'>
       <div className='area-input'></div>
@@ -54,7 +61,7 @@ function App () {
           <div className='card-body'>
             <div className='card-title mb-2'>Los Angeles Weather</div>
             <div className='card-actions justify-end'>
-              <button className='btn btn-primary'>Get Weather</button>
+              {/* Add stuff here */}
             </div>
           </div>
         </div>
