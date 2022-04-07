@@ -1,7 +1,5 @@
 const express = require('express')
-const path = require('path')
 const cors = require('cors')
-const axios = require('axios')
 const app = express()
 const api = require('./api/api')
 const locations = require('./api/locations')
@@ -12,6 +10,18 @@ app.use(express.static('../dist'))
 
 app.get('/api/locations', (req, res) => {
   res.status(200).json({ locations: Object.keys(locations) })
+})
+
+app.get('/locationdata', async (req, res) => {
+  const { concurrentCount } = req.query
+  const count = concurrentCount ?? 2
+  const data = Object.keys(locations).map(async location =>
+    api(location, count)
+  )
+
+  res.status(200).json({
+    locationData: await Promise.all(data)
+  })
 })
 
 app.get('/api/:location/:concurrentcount', async (req, res) => {

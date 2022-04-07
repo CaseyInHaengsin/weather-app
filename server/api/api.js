@@ -7,8 +7,12 @@ module.exports = async (location, concurrentCount) => {
       LOCATIONS[location],
       concurrentCount
     )
-    return await Promise.all(requests)
-  } catch (err) {}
+    const responses = await Promise.all(requests)
+    const data = responses.map(res => ({ location, data: res.data }))
+    return data
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 function buildConcurrentRequest (location, concurrentCount) {

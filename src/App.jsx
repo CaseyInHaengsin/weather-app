@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import Card from './components/Card'
 import './App.css'
 
 const BASE_URL = 'http://localhost:3001/api'
@@ -32,6 +33,7 @@ function App () {
   const [slcWeather, setSlcWeather] = useState(null)
   const [losAnglesWeather, setLosAngelesWeather] = useState(null)
   const [boiseStateWeather, setBoiseStateWeather] = useState(null)
+  const [weatherData, setWeatherData] = useState(null)
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     const getWeather = async () => {
@@ -50,6 +52,7 @@ function App () {
         boiseStateWeather: boiseStateWeather.data
       }
     }
+
     getWeather().then(data => {
       const { slcWeather, losAngelesWeather, boiseStateWeather } = data
       console.log('slcWeather', slcWeather)
@@ -59,8 +62,17 @@ function App () {
       setSlcWeather(slcAverage)
       setLosAngelesWeather(laAverage)
       setBoiseStateWeather(boiseAverage)
+      // TODO: set loading to false
+      setLoading(false)
     })
   }, [])
+  if (loading) {
+    return (
+      <div className='m-6 h-screen flex items-center justify-center flex-col'>
+        <progress className='progress w-56'></progress>
+      </div>
+    )
+  }
   return (
     <div className='m-6 h-screen flex items-center justify-center flex-col'>
       <div className='area-input'></div>
@@ -70,7 +82,14 @@ function App () {
           <div className='card-body'>
             <div className='card-title mb-2 justify-center'>SLC Weather</div>
             <div className='card-actions justify-center'>
-              {slcWeather ?? <h3>{slcWeather}</h3>}
+              <div className='stat'>
+                <div className='stat-title'>Average High</div>
+                {slcWeather ?? (
+                  <div className='stat-value text-secondary'>
+                    {Math.floor(slcWeather)}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
